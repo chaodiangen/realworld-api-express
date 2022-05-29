@@ -3,11 +3,13 @@ const morgan = require('morgan')
 const cors = require('cors')
 const router = require('./router')
 const errorHandler = require('./middleware/error-handler')
+const logger = require('./logger')
 require('./model')
+
 const app = express()
 
 // 日志
-app.use(morgan('dev'))
+app.use(morgan('dev'));
 
 app.use(express.json())
 
@@ -24,5 +26,19 @@ const PORT = process.env.PORT || 3000
 
 
 app.listen(PORT, () => {
+    console.log('                //         ')
+    console.log(`    \\\\         //        `)
+    console.log('     \\\\       //         ')
+    console.log('##DDDDDDDDDDDDDDDDDDDDDD##')
+    console.log('## DDDDDDDDDDDDDDDDDDDD ##')
+    console.log('## hh                hh ##')
+    console.log('## hh    //    \\\\    hh ##')
+    console.log('## hh   //      \\\\   hh ##')
+    console.log('## hh                hh ##')
+    console.log('## hh      wwww      hh ##')
+    console.log('## hh                hh ##')
+    console.log('## MMMMMMMMMMMMMMMMMMMM ##')
+    console.log('##MMMMMMMMMMMMMMMMMMMMMM##')
+    console.log('      \\/            \\/')
     console.log(`Server is running at http://localhost:${PORT} `)
 })

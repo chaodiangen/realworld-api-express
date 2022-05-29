@@ -6,7 +6,8 @@ const dbUrl = {
     host: 'localhost',
     user: 'root',
     password: '!@#123456',
-    database: 'realworld'
+    database: 'realworld',
+    dialect: 'mysql'  
 }
 
 module.exports = dbUrl
