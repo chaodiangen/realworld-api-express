@@ -40,6 +40,10 @@ const User = db.define('user'/*自定义表名*/, {
     bio: {
         type: Sequelize.STRING(50),
     },
+    // 头像
+    image: {
+        type: Sequelize.STRING(50),
+    },
     create_time: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW
@@ -57,7 +61,7 @@ const User = db.define('user'/*自定义表名*/, {
 
 //同步:没有就新建,有就不变
 // User.sync();
-// //先删除后同步
+// 先删除后同步
 // User.sync({
 //     force: true
 // });
