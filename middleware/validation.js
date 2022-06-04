@@ -1,4 +1,4 @@
-const { validationResult } = require('express-validator');
+const { validationResult, buildCheckFunction } = require('express-validator');
 // parallel processing
 const validate = validations => {
     return async (req, res, next) => {
@@ -12,4 +12,13 @@ const validate = validations => {
         res.status(400).json({ errors: errors.array() });
     };
 };
-module.exports = validate
+exports = module.exports = validate
+
+exports.isValidObjectId = (location, fields, title) => {
+    return buildCheckFunction(location)(fields).custom(async value => {
+        console.log(location, fields, title, value)
+        if (!Number(value)) {
+            return Promise.reject(title)
+        }
+    })
+}

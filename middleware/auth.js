@@ -22,6 +22,4 @@ module.exports = async (req, res, next) => {
     } catch (error) {
         return res.status(401).end()
     }
-    // 无效 401
-    // 有效 用户信息读取出来挂载到req上面
 }

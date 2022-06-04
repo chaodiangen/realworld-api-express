@@ -13,24 +13,19 @@ const { jwtSecret } = require('../config/config.default')
 // 用户登录
 exports.login = async (req, res, next) => {
     try {
-        const user = await User.findOne({
+        const data = await User.findOne({
             where: {
                 email: req.body.email,
                 password: md5(req.body.password)
             }
         })
-        const token = await jwt.sign({ userId: user.id }, jwtSecret, {
+        const token = await jwt.sign({ userId: data.id }, jwtSecret, {
             expiresIn: 60 * 60 * 24
         })
-        res.status(200).json({
-            username: user.username,
-            status: user.status,
-            email: user.email,
-            bio: user.bio,
-            token: token,
-            create_time: user.create_time,
-            update_time: user.update_time
-        })
+        const user = JSON.parse(JSON.stringify(data))
+        delete user.password
+        user.token = token
+        res.status(200).json(user)
     } catch (error) {
         next(error)
     }
@@ -45,15 +40,10 @@ exports.login = async (req, res, next) => {
  */
 exports.register = async (req, res, next) => {
     try {
-        const user = await User.create({ ...req.body })
-        res.status(200).json({
-            username: user.username,
-            status: user.status,
-            email: user.email,
-            bio: user.bio,
-            create_time: user.create_time,
-            update_time: user.update_time
-        })
+        const data = await User.create(req.body)
+        const user = JSON.parse(JSON.stringify(data))
+        delete user.password
+        res.status(200).json(user)
     } catch (error) {
         next(error)
     }
@@ -67,10 +57,14 @@ exports.register = async (req, res, next) => {
 // Get Current User
 exports.getUser = async (req, res, next) => {
     try {
-        // 数据认证
-        res.status(200).json({
-            user: req.user
+        const data = await User.findOne({
+            where: {
+                id: req.params.userId
+            }
         })
+        const user = JSON.parse(JSON.stringify(data))
+        delete user.password
+        res.status(200).json(user)
     } catch (error) {
         next(error)
     }
@@ -78,15 +72,16 @@ exports.getUser = async (req, res, next) => {
 // Update User
 exports.updateUser = async (req, res, next) => {
     try {
-        // 处理请求 
-        // 发送响应
+        // 查找当前用户的id 然后进行更改
         const params = {
             ...req.body
         }
-        const aa = await User.update(params, {
-            where: { id: params.id }
+        const user = await User.update(params, {
+            where: {
+                id: req.params.userId
+            }
         })
-        res.status(2001).json(aa)
+        res.status(201).end()
     } catch (error) {
         next(error)
     }
@@ -94,15 +89,12 @@ exports.updateUser = async (req, res, next) => {
 // Delete User
 exports.deleteUser = async (req, res, next) => {
     try {
-        // 处理请求 
-        // 发送响应
-        const params = {
-            ...req.body
-        }
-        const aa = await User.update(params, {
-            where: { id: params.id }
+        await User.destroy({
+            where: {
+                id: req.params.userId
+            }
         })
-        res.status(2001).json(aa)
+        res.status(204).end()
     } catch (error) {
         next(error)
     }

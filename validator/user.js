@@ -1,5 +1,4 @@
 const { body } = require('express-validator');
-const { user } = require('../config/config.default');
 const validate = require('../middleware/validation')
 const User = require('../model/user')
 const md5 = require('../util/md5')
@@ -40,6 +39,9 @@ exports.register = validate([
 
 exports.login = [
     validate([
+        body('username')
+            .notEmpty().withMessage('用户名不能为空')
+            .bail(),
         body('email')
             .notEmpty().withMessage('邮箱不能为空')
             .bail()
@@ -61,6 +63,13 @@ exports.login = [
         })
     ]),
     validate([
+        body('username').custom(async (username, { req }) => {
+            if (username !== req.user.username) {
+                return Promise.reject('密码错误')
+            }
+        })
+    ]),
+    validate([
         body('password').custom(async (password, { req }) => {
             if (md5(password) !== req.user.password) {
                 return Promise.reject('密码错误')
@@ -68,3 +77,74 @@ exports.login = [
         })
     ])
 ]
+exports.updateUser = [
+    validate([
+        validate.isValidObjectId(['params'], 'userId', '请输入正确id')
+    ]),
+    async (req, res, next) => {
+        const userId = req.params.userId
+        const user = await User.findOne({
+            where: {
+                id: userId
+            }
+        })
+        req.current = user
+        if (!user) {
+            return res.status(404).end()
+        }
+        next()
+    },
+    async (req, res, next) => {
+        if (req.user.role !== 1 && req.user.id !== req.current.id) {
+            return res.status(403).end()
+        }
+        next()
+    }
+]
+exports.delete = [
+    validate([
+        validate.isValidObjectId(['params'], 'userId', '请输入正确id')
+    ]),
+    async (req, res, next) => {
+        const userId = req.params.userId
+        const user = await User.findOne({
+            where: {
+                id: userId
+            }
+        })
+        req.current = user
+        if (!user) {
+            return res.status(404).end()
+        }
+        next()
+    },
+    async (req, res, next) => {
+        if (req.user.role !== 1) {
+            return res.status(403).end()
+        }
+        next()
+    }
+]
+
+/**
+ *    body('id').custom(async (id, { req }) => {
+        const user = await User.findOne({
+            where: {
+                id: id
+            }
+        })
+        if (!user) {
+            return Promise.reject('用户无法删除自己')
+        }
+        // 判断当前登录的用户权限
+        const current_user = JSON.parse(JSON.stringify(req.user))
+        if (current_user.id === user.id) {
+            return Promise.reject('用户无法删除自己')
+        }
+        if (current_user.role === 2) {
+            if (user.role === 1) {
+                return Promise.reject('管理员暂时无法删除')
+            }
+        }
+    })
+ */

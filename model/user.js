@@ -13,14 +13,25 @@ const User = db.define('user'/*自定义表名*/, {
     username: {
         type: Sequelize.STRING,
         allowNull: false,//不允许为null
+        unique: true
     },
     //密码
     password: {
-        type: Sequelize.STRING(40),
+        type: Sequelize.STRING,
         allowNull: false,//不允许为null
         set (pwd) { // Getter Setter
             this.setDataValue('password', md5(pwd)) // 保存 hash 后的密码
         }
+    },
+    //手机
+    mobile: {
+        type: Sequelize.STRING,
+        allowNull: true,//允许为null
+    },
+    role:{
+        type: Sequelize.INTEGER,
+        allowNull: true,//允许为null
+        defaultValue: 3,//默认值是0
     },
     //状态
     status: {
@@ -30,19 +41,19 @@ const User = db.define('user'/*自定义表名*/, {
     },
     //邮箱
     email: {
-        type: Sequelize.STRING(50),
-        allowNull: false,//不允许为null
+        type: Sequelize.STRING,
+        allowNull: false,//允许为null
         validate: {
             isEmail: true,   //类型检测,是否是邮箱格式
         }
     },
     // 描述
     bio: {
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING,
     },
     // 头像
     image: {
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING,
     },
     create_time: {
         type: Sequelize.DATE,
@@ -61,7 +72,7 @@ const User = db.define('user'/*自定义表名*/, {
 
 //同步:没有就新建,有就不变
 // User.sync();
-// 先删除后同步
+// // 先删除后同步
 // User.sync({
 //     force: true
 // });
