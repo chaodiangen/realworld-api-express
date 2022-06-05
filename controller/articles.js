@@ -54,6 +54,7 @@ exports.getFeed = async (req, res, next) => {
         next(error)
     }
 }
+
 exports.getArticle = async (req, res, next) => {
     try {
         const id = req.params.articleId
