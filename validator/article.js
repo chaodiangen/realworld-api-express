@@ -1,5 +1,6 @@
 const { body, param, validationResult } = require('express-validator');
 const validate = require('../middleware/validation')
+const Article = require('../model/article')
 
 exports.createArticle = validate([
     body('title').notEmpty().withMessage('文章标题不能为空'),
@@ -15,19 +16,28 @@ exports.getArticle = validate([
 ])
 exports.updateArticle = [
     validate([
-        validate.isValidObjectId(['param'], 'articleId')
+        validate.isValidObjectId(['params'], 'articleId', '文章id类型错误')
     ]),
-    (req, res, next) => {
+    async (req, res, next) => {
         const articleId = req.params.articleId
+        const article = await Article.findOne({
+            where: {
+                id: articleId
+            }
+        })
+        req.article = JSON.stringify(article)
         // 查找文章作者是不是当前用户
-        // if (0) {
-        //     return res.status(404).end()
-        // }
+        if (!article) {
+            return res.status(404).end()
+        }
         next()
     },
     async (req, res, next) => {
-        // if (req.user.id !== article.author) {
-        //     return res.status(403).end()
-        // }
+        const user = JSON.parse(JSON.stringify(req.user))
+        if (user.id !== JSON.parse(req.article).userId) {
+            return res.status(403).end()
+        }
+        next()
     }
 ]
+exports.delete = exports.updateArticle 

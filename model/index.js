@@ -8,7 +8,7 @@ const sequelize = new Sequelize(
     dbUrl.password,
     {
         host: dbUrl.host,  //数据库域名
-        dialect:dbUrl.dialect,
+        dialect: dbUrl.dialect,
         // 设置时区
         timezon: '+08:00',
         define: {
@@ -32,4 +32,12 @@ sequelize
 
 module.exports = sequelize
 
-
+// 相应字段有:
+// type 字段数据类型(sequlize. …)
+// allowNull(是否允许为空true,false)
+// autoIncrement(自增, true ,false)
+// unique(唯一性, true,false, string)
+// comment (解释 说明)
+// defaultValue (字段默认值)
+// primaryKey (对主键的设置, true,false)
+// defaultValue(默认值的设置) 

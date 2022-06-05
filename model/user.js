@@ -28,7 +28,7 @@ const User = db.define('user'/*自定义表名*/, {
         type: Sequelize.STRING,
         allowNull: true,//允许为null
     },
-    role:{
+    role: {
         type: Sequelize.INTEGER,
         allowNull: true,//允许为null
         defaultValue: 3,//默认值是0
@@ -51,9 +51,17 @@ const User = db.define('user'/*自定义表名*/, {
     bio: {
         type: Sequelize.STRING,
     },
-    // 头像
-    image: {
+    avart: {
         type: Sequelize.STRING,
+        defaultValue: 'https://img.socialmarketings.com/article/2019/12/1576041203581.jpg'
+    },
+    userType: {
+        type: Sequelize.BIGINT,
+        defaultValue: 0
+    },
+    bImage: {
+        type: Sequelize.STRING,
+        defaultValue: 'https://img.socialmarketings.com/banner/2019/12/1576038652668.jpg'
     },
     create_time: {
         type: Sequelize.DATE,

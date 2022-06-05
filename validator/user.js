@@ -125,26 +125,3 @@ exports.delete = [
         next()
     }
 ]
-
-/**
- *    body('id').custom(async (id, { req }) => {
-        const user = await User.findOne({
-            where: {
-                id: id
-            }
-        })
-        if (!user) {
-            return Promise.reject('用户无法删除自己')
-        }
-        // 判断当前登录的用户权限
-        const current_user = JSON.parse(JSON.stringify(req.user))
-        if (current_user.id === user.id) {
-            return Promise.reject('用户无法删除自己')
-        }
-        if (current_user.role === 2) {
-            if (user.role === 1) {
-                return Promise.reject('管理员暂时无法删除')
-            }
-        }
-    })
- */

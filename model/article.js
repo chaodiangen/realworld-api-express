@@ -5,10 +5,12 @@ const User = require('./user')
 const Article = db.define('article', {
     id: {
         type: Sequelize.INTEGER,
-        primaryKey: true,       //主键
-        autoIncrement: true,    //自增
-        comment: "自增id"       //注释:只在代码中有效
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+        unique: true
     },
+    coverImage: Sequelize.STRING,
     slug: {
         type: Sequelize.STRING,
         allowNull: true,//不允许为null
@@ -29,6 +31,17 @@ const Article = db.define('article', {
         type: Sequelize.STRING,
         allowNull: true,//不允许为null
     },
+    sortId: Sequelize.STRING,
+    content: Sequelize.TEXT,
+    readCount: {
+        type: Sequelize.STRING,
+        defaultValue: 0
+    },
+    commentCount: {
+        type: Sequelize.STRING,
+        defaultValue: 0
+    },
+    userId: Sequelize.INTEGER,
     favorited: {
         type: Sequelize.BOOLEAN,
         allowNull: true,//不允许为null
@@ -45,13 +58,16 @@ const Article = db.define('article', {
     timestamps: false,
     freezeTableName: true     // 设置为true时，sequelize不会改变表名，否则可能会按其规则有所调整
 })
-User.hasMany(Article)
-Article.belongsTo(User);
-// User.associate = function () {
-//     Article.belongsTo(User, { foreignKey: 'user_id', targetKey: 'id', as: 'author' })
-// }
 
-// Article.belongsTo(User, { foreignKey: 'id', as: 'author' })
+/**
+ * 定义表关联
+ * foreignKey 外键
+ * targetKey 目标键
+ * belongsTo  属于
+ */
+Article.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+User.hasMany(Article)
+
 //同步:没有就新建,有就不变
 // Article.sync();
 // // 先删除后同步

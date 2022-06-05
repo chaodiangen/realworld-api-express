@@ -16,7 +16,6 @@ exports = module.exports = validate
 
 exports.isValidObjectId = (location, fields, title) => {
     return buildCheckFunction(location)(fields).custom(async value => {
-        console.log(location, fields, title, value)
         if (!Number(value)) {
             return Promise.reject(title)
         }

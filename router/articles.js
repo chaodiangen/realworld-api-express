@@ -6,7 +6,7 @@ const auth = require('../middleware/auth')
 
 // List Articles  Returns most recent articles globally by default, provide tag, author or favorited query parameter to filter results
 // Query Parameters:
-router.get('/', articlesCtrl.getList)
+router.post('/', articlesCtrl.getList)
 // Feed Articles
 // Can also take limit and offset query parameters like List Articles
 // Authentication required, will return multiple articles created by followed users, ordered by most recent first.
@@ -22,7 +22,7 @@ router.post('/', auth, articleValidator.createArticle, articlesCtrl.createArticl
 router.put('/:articleId', auth, articleValidator.updateArticle, articlesCtrl.updateArticle)
 
 // Delete Article
-router.delete('/:articleId', auth, articlesCtrl.deleteArticle)
+router.delete('/:articleId', auth, articleValidator.delete, articlesCtrl.deleteArticle)
 
 // Add Comments to an Article
 router.post('/:articleId/comments', articlesCtrl.addComments)
